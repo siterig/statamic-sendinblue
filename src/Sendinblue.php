@@ -51,7 +51,7 @@ class Sendinblue
     /**
      * Get Lists from Sendinblue
      *
-     * @param $list_id int
+     * @param int $list_id
      *
      * @return array
      */
@@ -130,7 +130,9 @@ class Sendinblue
     /**
      * Get Attributes from Sendinblue
      *
-     * @return array
+     * @param   string  $attribute_name
+     *
+     * @return  array
      */
     public function getAttributes(string $attribute_name = null)
     {
@@ -181,8 +183,8 @@ class Sendinblue
     /**
      * Add Subscriber to Sendinblue
      *
-     * @param $config array
-     * @param $submission array
+     * @param array $config
+     * @param object $submission
      *
      * @return array
      */
@@ -271,7 +273,7 @@ class Sendinblue
     /**
      * Are there any Marketing Opt-in fields setup and have they been accepted?
      *
-     * @param $config array
+     * @param array $config
      * @param $submission array
      *
      * @return bool
