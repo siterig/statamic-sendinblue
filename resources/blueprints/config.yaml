@@ -1,0 +1,106 @@
+api_key:
+  display: 'Sendinblue API Key'
+  instructions: 'Add your `SENDINBLUE_API_KEY` value to your `.env` file.'
+  type: text
+  default: api_key
+  read_only: true
+forms:
+  display: 'Forms'
+  instructions: 'Add a row for each form you want to capture subscribers details from.'
+  type: grid
+  mode: stacked
+  add_row: 'Add Form'
+  if:
+    api_key: not empty
+  fields:
+    -
+      handle: form
+      field:
+        display: 'Form'
+        instructions: 'Select the form you wish to use.'
+        type: form
+        max_items: 1
+        mode: select
+        validate: required
+        width: 50
+    -
+      handle: list_id
+      field:
+        display: 'List'
+        instructions: 'Sendinblue contact list to add subscribers to.'
+        type: sib_list
+        mode: select
+        max_items: 1
+        validate: required
+        width: 50
+        if:
+          form: not empty
+    -
+      handle: name_field
+      field:
+        display: 'Name Field'
+        instructions: 'Select the form field to use for `FIRSTNAME` (and `LASTNAME` if mapped).'
+        type: form_fields
+        max_items: 1
+        width: 50
+        if:
+          form: not empty
+    -
+      handle: email_field
+      field:
+        display: 'Email Field'
+        instructions: 'Select the form field to use for `EMAIL`.'
+        type: form_fields
+        validate: required
+        max_items: 1
+        width: 50
+        if:
+          form: not empty
+    -
+      handle: auto_split_name
+      field:
+        display: 'Automatically Split Name'
+        instructions: 'Split into `FIRSTNAME` and `LASTNAME` on Sendinblue, this setting is ignored if you map `LASTNAME` separately.'
+        type: toggle
+        default: true
+        width: 50
+        if:
+          form: not empty
+    -
+      handle: marketing_optin_field
+      field:
+        display: 'Opt-in Field'
+        instructions: 'Should be an un-ticked checkbox that conforms to data protection regulations in your region.'
+        type: form_fields
+        max_items: 1
+        width: 50
+        if:
+          form: not empty
+    -
+      handle: mapped_fields
+      field:
+        mode: table
+        reorderable: true
+        display: 'Mapped Fields'
+        type: grid
+        icon: grid
+        add_row: 'Add Mapped Field'
+        fields:
+          -
+            handle: list_attribute
+            field:
+              display: 'Sendinblue Attribute'
+              type: sib_attribute
+              mode: select
+              width: 50
+              max_items: 1
+          -
+            handle: mapped_form_fields
+            field:
+              display: 'Form Field(s)'
+              instructions: 'Select your form field name.'
+              type: form_fields
+              max_items: 1
+              width: 50
+        if:
+          form: not empty

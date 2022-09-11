@@ -1,0 +1,52 @@
+{
+    "name": "siterig/sendinblue",
+    "license": "proprietary",
+    "type": "statamic-addon",
+    "require": {
+        "php": "^7.4 || ^8.0 || ^8.1",
+        "edalzell/forma": "^1.2",
+        "laravel/framework": "^7.30.1 || ^8.6.12 || ^9.0",
+        "sendinblue/api-v3-sdk": "^8.3.1",
+        "statamic/cms": "^3.2"
+    },
+    "description": "Subscribe your Statamic v3 contact form submissions straight into Sendinblue",
+    "authors": [
+        {
+            "name": "Matt Stone",
+            "email": "matt@rockandscissor.com",
+            "homepage": "https://www.rockandscissor.com",
+            "role": "Co-founder"
+        },
+        {
+            "name": "Craig Bowler",
+            "email": "craig@rockandscissor.com",
+            "homepage": "https://www.rockandscissor.com",
+            "role": "Co-founder"
+        },
+        {
+            "name": "Jamie McGrory",
+            "role": "Consultant Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SiteRig\\Sendinblue\\": "src"
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Sendinblue",
+            "description": "Sendinblue addon for Statamic"
+        },
+        "laravel": {
+            "providers": [
+                "SiteRig\\Sendinblue\\ServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    }
+}
