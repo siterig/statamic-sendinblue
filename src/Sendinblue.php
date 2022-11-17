@@ -317,6 +317,8 @@ class Sendinblue
      */
     private function doMapFields(string $field_name, string $field_mapped_name, array $submission_data, string $separator = ", ")
     {
+        $field_data = array();
+
         if (array_key_exists($field_mapped_name, $submission_data)) { // Check if the array key exists
             $field_data[] = $submission_data[$field_mapped_name];
         }
