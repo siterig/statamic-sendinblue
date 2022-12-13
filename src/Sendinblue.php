@@ -250,15 +250,10 @@ class Sendinblue
             $response = $this->sendinblue_contacts->createContact($this->subscriber_data);
 
             // Check response for errors
-            if (property_exists($response, 'code') && $response->code == '400') {
+            if (!is_null($response) && property_exists($response, 'code') && $response->code == '400') {
 
                 // Generate error to the log
                 \Log::error("Sendinblue - " . $response->error->message);
-
-            } elseif (empty($response)) {
-
-                // Generate error to the log
-                \Log::error("Sendinblue - Bad Request");
 
             }
 
