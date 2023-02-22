@@ -17,6 +17,6 @@ class FormSubmission
 
     private function getFormConfig(string $handle)
     {
-        return collect([config('sendinblue.forms', [])])->firstWhere('form', $handle) ?? [];
+        return collect(config('sendinblue.forms', []))->firstWhere('form', $handle) ?? [];
     }
 }

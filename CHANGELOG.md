@@ -15,4 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed fatal error caused by missing array definition when the field mapping loop runs
 
 ## [1.0.2] - 2022-12-13
+
+### Fixed
 - Fixed error when submitting a contact email address that already exists on Sendinblue
+
+## [1.0.3] - 2023-02-22
+
+### Fixed
+- Fixed issue with config where only the first form is saved

@@ -13,7 +13,7 @@ class ConfigController extends BaseController
 
         return array_merge(
             $values,
-            ['forms' => $formConfig[0]]
+            ['forms' => $formConfig]
         );
     }
 
@@ -23,7 +23,7 @@ class ConfigController extends BaseController
 
         return array_merge(
             $config,
-            ['forms' => [Arr::get($config, 'forms', [])]]
+            ['forms' => Arr::get($config, 'forms', [])]
         );
     }
 }
