@@ -283,6 +283,11 @@ class Sendinblue
             return true;
         }
 
+        // If no marketing optin field has been configured, we can assume that it is not needed and therefore allow the check to pass
+        if (!$marketing_optin) {
+            return true;
+        }
+
         // Return false as field is setup but has not been checked
         return false;
     }
