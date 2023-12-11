@@ -1,6 +1,6 @@
 api_key:
-  display: 'Sendinblue API Key'
-  instructions: 'Add your `SENDINBLUE_API_KEY` value to your `.env` file.'
+  display: 'Brevo API Key'
+  instructions: 'Add your `BREVO_API_KEY` value to your `.env` file.'
   type: text
   default: api_key
   read_only: true
@@ -27,7 +27,7 @@ forms:
       handle: list_id
       field:
         display: 'List'
-        instructions: 'Sendinblue contact list to add subscribers to.'
+        instructions: 'Brevo contact list to add subscribers to.'
         type: sib_list
         mode: select
         max_items: 1
@@ -60,7 +60,7 @@ forms:
       handle: auto_split_name
       field:
         display: 'Automatically Split Name'
-        instructions: 'Split into `FIRSTNAME` and `LASTNAME` on Sendinblue, this setting is ignored if you map `LASTNAME` separately.'
+        instructions: 'Split into `FIRSTNAME` and `LASTNAME` on Brevo, this setting is ignored if you map `LASTNAME` separately.'
         type: toggle
         default: true
         width: 50
@@ -89,7 +89,7 @@ forms:
           -
             handle: list_attribute
             field:
-              display: 'Sendinblue Attribute'
+              display: 'Brevo Attribute'
               type: sib_attribute
               mode: select
               width: 50

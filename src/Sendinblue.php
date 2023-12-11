@@ -4,9 +4,9 @@ namespace SiteRig\Sendinblue;
 
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
-use SendinBlue\Client\Api as SendinblueAPI;
-use SendinBlue\Client\Configuration as SendinblueConfig;
-use SendinBlue\Client\Model as SendinblueModel;
+use Brevo\Client\Api as BrevoAPI;
+use Brevo\Client\Configuration as BrevoConfig;
+use Brevo\Client\Model as SendinblueModel;
 use Statamic\Facades\Blueprint;
 use Statamic\Support\Arr;
 
@@ -29,16 +29,16 @@ class Sendinblue
         if ($api_key = config('sendinblue.api_key')) {
 
             // setup api-key in config
-            $this->config = SendinblueConfig::getDefaultConfiguration()->setApiKey('api-key', $api_key);
+            $this->config = BrevoConfig::getDefaultConfiguration()->setApiKey('api-key', $api_key);
 
             // create AttributesAPI object
-            $this->sendinblue_attributes = new SendinblueAPI\AttributesApi(
+            $this->sendinblue_attributes = new BrevoAPI\AttributesApi(
                 new GuzzleHttp\Client(),
                 $this->config
             );
 
             // create ContactsAPI object
-            $this->sendinblue_contacts = new SendinblueAPI\ContactsApi(
+            $this->sendinblue_contacts = new BrevoAPI\ContactsApi(
                 new GuzzleHttp\Client(),
                 $this->config
             );

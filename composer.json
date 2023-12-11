@@ -6,10 +6,10 @@
         "php": "^8.2",
         "edalzell/forma": "^2.1",
         "laravel/framework": "^9.0 || ^10.0",
-        "sendinblue/api-v3-sdk": "^8.3.1",
-        "statamic/cms": "^4.0"
+        "statamic/cms": "^4.0",
+        "getbrevo/brevo-php": "^1.0"
     },
-    "description": "Subscribe your Statamic v3 contact form submissions straight into Sendinblue",
+    "description": "Subscribe your Statamic v4 contact form submissions straight into Brevo",
     "authors": [
         {
             "name": "Matt Stone",
@@ -35,8 +35,8 @@
     },
     "extra": {
         "statamic": {
-            "name": "Sendinblue",
-            "description": "Sendinblue addon for Statamic"
+            "name": "Brevo",
+            "description": "Brevo addon for Statamic"
         },
         "laravel": {
             "providers": [
