@@ -1,5 +1,5 @@
 {
-    "name": "siterig/sendinblue",
+    "name": "siterig/brevo",
     "license": "proprietary",
     "type": "statamic-addon",
     "require": {

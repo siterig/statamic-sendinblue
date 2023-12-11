@@ -43,7 +43,7 @@ class ServiceProvider extends AddonServiceProvider
 
     protected function bootAddonConfig()
     {
-        Forma::add('siterig/sendinblue', ConfigController::class);
+        Forma::add('siterig/brevo', ConfigController::class);
 
         $this->mergeConfigFrom(__DIR__ . '/../config/brevo.php', 'brevo');
 
