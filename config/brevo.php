@@ -4,21 +4,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Sendinblue API Key
+    | Brevo API Key
     |--------------------------------------------------------------------------
     |
-    | The API key for connecting to the Sendinblue API.
+    | The API key for connecting to the Brevo API.
     |
     */
 
-    'api_key' => env('SENDINBLUE_API_KEY'),
+    'api_key' => env('BREVO_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
     | Forms
     |--------------------------------------------------------------------------
     |
-    | The form settings for submissions to add to your Sendinblue list.
+    | The form settings for submissions to add to your Brevo list.
     |
     */
 
@@ -40,7 +40,7 @@ return [
             | List
             |--------------------------------------------------------------------------
             |
-            | The Sendinblue list that the submission should be added to.
+            | The Brevo list that the submission should be added to.
             |
             */
 
@@ -73,7 +73,7 @@ return [
             | Automatically Split Name
             |--------------------------------------------------------------------------
             |
-            | Split into `FIRSTNAME` and `LASTNAME` on Sendinblue. This setting is ignored
+            | Split into `FIRSTNAME` and `LASTNAME` on Brevo. This setting is ignored
             | if you map `LASTNAME` separately.
             |
             */
@@ -105,10 +105,10 @@ return [
                 [
                     /*
                     |--------------------------------------------------------------------------
-                    | Sendinblue Attribute
+                    | Brevo Attribute
                     |--------------------------------------------------------------------------
                     |
-                    | The attribute on your Sendinblue Contact list
+                    | The attribute on your Brevo Contact list
                     |
                     */
 

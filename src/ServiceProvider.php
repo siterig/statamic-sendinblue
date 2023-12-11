@@ -1,13 +1,13 @@
 <?php
 
-namespace SiteRig\Sendinblue;
+namespace SiteRig\Brevo;
 
 use Edalzell\Forma\Forma;
-use SiteRig\Sendinblue\Fieldtypes\FormFields;
-use SiteRig\Sendinblue\Fieldtypes\SibAttribute;
-use SiteRig\Sendinblue\Fieldtypes\SibList;
-use SiteRig\Sendinblue\Http\Controllers\ConfigController;
-use SiteRig\Sendinblue\Listeners\FormSubmission;
+use SiteRig\Brevo\Fieldtypes\FormFields;
+use SiteRig\Brevo\Fieldtypes\SibAttribute;
+use SiteRig\Brevo\Fieldtypes\SibList;
+use SiteRig\Brevo\Http\Controllers\ConfigController;
+use SiteRig\Brevo\Listeners\FormSubmission;
 use Statamic\Events\SubmissionCreated;
 use Statamic\Facades\Permission;
 use Statamic\Providers\AddonServiceProvider;
@@ -45,11 +45,11 @@ class ServiceProvider extends AddonServiceProvider
     {
         Forma::add('siterig/sendinblue', ConfigController::class);
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/sendinblue.php', 'sendinblue');
+        $this->mergeConfigFrom(__DIR__ . '/../config/brevo.php', 'brevo');
 
         $this->publishes([
-            __DIR__ . '/../config/sendinblue.php' => config_path('sendinblue.php'),
-        ], 'sendinblue-config');
+            __DIR__ . '/../config/brevo.php' => config_path('brevo.php'),
+        ], 'brevo-config');
 
         return $this;
     }
@@ -57,8 +57,8 @@ class ServiceProvider extends AddonServiceProvider
     protected function bootAddonPermissions()
     {
         $this->app->booted(function () {
-            Permission::group('sendinblue', 'Sendinblue', function () {
-                Permission::register('edit sendinblue configuration')->label(__('Edit Sendinblue Configuration'));
+            Permission::group('brevo', 'Brevo', function () {
+                Permission::register('edit brevo configuration')->label(__('Edit Brevo Configuration'));
             });
         });
 

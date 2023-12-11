@@ -30,7 +30,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "SiteRig\\Sendinblue\\": "src"
+            "SiteRig\\Brevo\\": "src"
         }
     },
     "extra": {
@@ -40,7 +40,7 @@
         },
         "laravel": {
             "providers": [
-                "SiteRig\\Sendinblue\\ServiceProvider"
+                "SiteRig\\Brevo\\ServiceProvider"
             ]
         }
     },

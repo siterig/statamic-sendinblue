@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteRig\Sendinblue\Http\Controllers;
+namespace SiteRig\Brevo\Http\Controllers;
 
 use Statamic\Fields\Field;
 use Statamic\Forms\Form as FormsForm;

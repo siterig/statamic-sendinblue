@@ -1,22 +1,22 @@
 <?php
 
-namespace SiteRig\Sendinblue\Listeners;
+namespace SiteRig\Brevo\Listeners;
 
-use SiteRig\Sendinblue\Sendinblue;
+use SiteRig\Brevo\Brevo;
 use Statamic\Events\SubmissionCreated;
 
 class FormSubmission
 {
-    private $sendinblue = null;
+    private $brevo = null;
 
     public function handle(SubmissionCreated $event)
     {
-        $this->sendinblue = new Sendinblue;
-        $this->sendinblue->addSubscriber($this->getFormConfig($event->submission->form()->handle()), $event->submission->data());
+        $this->brevo = new Brevo;
+        $this->brevo->addSubscriber($this->getFormConfig($event->submission->form()->handle()), $event->submission->data());
     }
 
     private function getFormConfig(string $handle)
     {
-        return collect(config('sendinblue.forms', []))->firstWhere('form', $handle) ?? [];
+        return collect(config('brevo.forms', []))->firstWhere('form', $handle) ?? [];
     }
 }

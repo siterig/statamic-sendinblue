@@ -1,29 +1,29 @@
 <?php
 
-namespace SiteRig\Sendinblue\Fieldtypes;
+namespace SiteRig\Brevo\Fieldtypes;
 
-use SiteRig\Sendinblue\Sendinblue;
+use SiteRig\Brevo\Brevo;
 use Statamic\Fieldtypes\Relationship;
 
 class SibAttribute extends Relationship
 {
-    private $sendinblue = null;
+    private $brevo = null;
 
     protected $canCreate = false;
 
     public function __construct()
     {
-        $this->sendinblue = new Sendinblue;
+        $this->brevo = new Brevo;
     }
 
     public function getIndexItems($request)
     {
-        return $this->sendinblue->getAttributes();
+        return $this->brevo->getAttributes();
     }
 
     protected function toItemArray($id)
     {
-        if ($id && $sib_attribute = $this->sendinblue->getAttributes($id)) {
+        if ($id && $sib_attribute = $this->brevo->getAttributes($id)) {
             return $sib_attribute;
         }
 

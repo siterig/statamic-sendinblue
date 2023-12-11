@@ -1,22 +1,21 @@
 <?php
 
-namespace SiteRig\Sendinblue;
+namespace SiteRig\Brevo;
 
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
 use Brevo\Client\Api as BrevoAPI;
 use Brevo\Client\Configuration as BrevoConfig;
-use Brevo\Client\Model as SendinblueModel;
-use Statamic\Facades\Blueprint;
+use Brevo\Client\Model as BrevoModel;
 use Statamic\Support\Arr;
 
-class Sendinblue
+class Brevo
 {
     private $config = null;
 
-    private $sendinblue_attributes = null;
+    private $brevo_attributes = null;
 
-    private $sendinblue_contacts = null;
+    private $brevo_contacts = null;
 
     private $subscriber_data = [];
 
@@ -26,30 +25,30 @@ class Sendinblue
 
     public function __construct()
     {
-        if ($api_key = config('sendinblue.api_key')) {
+        if ($api_key = config('brevo.api_key')) {
 
             // setup api-key in config
             $this->config = BrevoConfig::getDefaultConfiguration()->setApiKey('api-key', $api_key);
 
             // create AttributesAPI object
-            $this->sendinblue_attributes = new BrevoAPI\AttributesApi(
+            $this->brevo_attributes = new BrevoAPI\AttributesApi(
                 new GuzzleHttp\Client(),
                 $this->config
             );
 
             // create ContactsAPI object
-            $this->sendinblue_contacts = new BrevoAPI\ContactsApi(
+            $this->brevo_contacts = new BrevoAPI\ContactsApi(
                 new GuzzleHttp\Client(),
                 $this->config
             );
 
             // create contact object
-            $this->subscriber_data = new SendinblueModel\CreateContact();
+            $this->subscriber_data = new BrevoModel\CreateContact();
         }
     }
 
     /**
-     * Get Lists from Sendinblue
+     * Get Lists from Brevo
      *
      * @param int $list_id
      *
@@ -61,7 +60,7 @@ class Sendinblue
         if ($list_id) {
 
             // Get single list
-            $lists = $this->sendinblue_contacts->getList($list_id);
+            $lists = $this->brevo_contacts->getList($list_id);
 
             // Check if there was an error getting this list by id
             if (property_exists($lists, 'code')) {
@@ -91,8 +90,8 @@ class Sendinblue
                 'sort' => 'desc',
             );
 
-            // Get lists from Sendinblue
-            $lists = $this->sendinblue_contacts->getLists($params['limit'], $params['offset'], $params['sort']);
+            // Get lists from Brevo
+            $lists = $this->brevo_contacts->getLists($params['limit'], $params['offset'], $params['sort']);
 
             // Check if there was an error getting this list by id
             if (property_exists($lists, 'code')) {
@@ -128,7 +127,7 @@ class Sendinblue
     }
 
     /**
-     * Get Attributes from Sendinblue
+     * Get Attributes from Brevo
      *
      * @param   string  $attribute_name
      *
@@ -136,8 +135,8 @@ class Sendinblue
      */
     public function getAttributes(string $attribute_name = null)
     {
-        // Get attributes from Sendinblue
-        $attributes = $this->sendinblue_attributes->getAttributes();
+        // Get attributes from Brevo
+        $attributes = $this->brevo_attributes->getAttributes();
 
         // Create new array for fields
         $attributes_list = [];
@@ -181,7 +180,7 @@ class Sendinblue
     }
 
     /**
-     * Add Subscriber to Sendinblue
+     * Add Subscriber to Brevo
      *
      * @param array $config
      * @param object $submission
@@ -246,14 +245,14 @@ class Sendinblue
             // Set list id
             $this->subscriber_data['listIds'] = [$config['list_id']];
 
-            // send to Sendinblue
-            $response = $this->sendinblue_contacts->createContact($this->subscriber_data);
+            // send to Brevo
+            $response = $this->brevo_contacts->createContact($this->subscriber_data);
 
             // Check response for errors
             if (!is_null($response) && property_exists($response, 'code') && $response->code == '400') {
 
                 // Generate error to the log
-                \Log::error("Sendinblue - " . $response->error->message);
+                \Log::error("Brevo - " . $response->error->message);
 
             }
 
@@ -302,7 +301,7 @@ class Sendinblue
     }
 
     /**
-     * Map the fields ready for payload sent to Sendinblue
+     * Map the fields ready for payload sent to Brevo
      *
      * @param $field_name string
      * @param $field_mapped_name string

@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteRig\Sendinblue\Http\Controllers;
+namespace SiteRig\Brevo\Http\Controllers;
 
 use Edalzell\Forma\ConfigController as BaseController;
 use Illuminate\Support\Arr;
@@ -19,7 +19,7 @@ class ConfigController extends BaseController
 
     protected function preProcess(string $handle): array
     {
-        $config = config($handle);
+        $config = config('brevo');
 
         return array_merge(
             $config,

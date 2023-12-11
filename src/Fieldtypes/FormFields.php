@@ -1,6 +1,6 @@
 <?php
 
-namespace SiteRig\Sendinblue\Fieldtypes;
+namespace SiteRig\Brevo\Fieldtypes;
 
 use Statamic\Fields\Fieldtype;
 
