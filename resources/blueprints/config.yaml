@@ -28,7 +28,7 @@ forms:
       field:
         display: 'List'
         instructions: 'Brevo contact list to add subscribers to.'
-        type: sib_list
+        type: brevo_list
         mode: select
         max_items: 1
         validate: required
@@ -90,7 +90,7 @@ forms:
             handle: list_attribute
             field:
               display: 'Brevo Attribute'
-              type: sib_attribute
+              type: brevo_attribute
               mode: select
               width: 50
               max_items: 1

@@ -4,8 +4,8 @@ namespace SiteRig\Brevo;
 
 use Edalzell\Forma\Forma;
 use SiteRig\Brevo\Fieldtypes\FormFields;
-use SiteRig\Brevo\Fieldtypes\SibAttribute;
-use SiteRig\Brevo\Fieldtypes\SibList;
+use SiteRig\Brevo\Fieldtypes\BrevoAttribute;
+use SiteRig\Brevo\Fieldtypes\BrevoList;
 use SiteRig\Brevo\Http\Controllers\ConfigController;
 use SiteRig\Brevo\Listeners\FormSubmission;
 use Statamic\Events\SubmissionCreated;
@@ -16,8 +16,8 @@ class ServiceProvider extends AddonServiceProvider
 {
     protected $fieldtypes = [
         FormFields::class,
-        SibAttribute::class,
-        SibList::class,
+        BrevoAttribute::class,
+        BrevoList::class,
     ];
 
     protected $listen = [

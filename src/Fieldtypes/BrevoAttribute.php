@@ -5,7 +5,7 @@ namespace SiteRig\Brevo\Fieldtypes;
 use SiteRig\Brevo\Brevo;
 use Statamic\Fieldtypes\Relationship;
 
-class SibList extends Relationship
+class BrevoAttribute extends Relationship
 {
     private $brevo = null;
 
@@ -18,15 +18,15 @@ class SibList extends Relationship
 
     public function getIndexItems($request)
     {
-        return $this->brevo->getLists();
+        return $this->brevo->getAttributes();
     }
 
     protected function toItemArray($id)
     {
-        if ($id && $sib_list = $this->brevo->getLists($id)) {
-            return $sib_list;
+        if ($id && $brevo_attribute = $this->brevo->getAttributes($id)) {
+            return $brevo_attribute;
         }
 
-        return [];
+        return[];
     }
 }
