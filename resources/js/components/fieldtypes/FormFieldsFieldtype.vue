@@ -9,6 +9,7 @@
             :searchable="true"
             @input="$emit('input', $event)"
             placeholder="Choose a form field..."
+            :appendToBody="true"
         />
     </div>
 </template>
