@@ -45,10 +45,10 @@ class ServiceProvider extends AddonServiceProvider
     {
         Forma::add('siterig/sendinblue', ConfigController::class);
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/brevo.php', 'brevo');
+        $this->mergeConfigFrom(__DIR__ . '/../config/sendinblue.php', 'brevo');
 
         $this->publishes([
-            __DIR__ . '/../config/brevo.php' => config_path('brevo.php'),
+            __DIR__ . '/../config/sendinblue.php' => config_path('sendinblue.php'),
         ], 'brevo-config');
 
         return $this;

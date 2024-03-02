@@ -18,7 +18,7 @@ Read it on the [Statamic Marketplace](https://statamic.com/addons/siterig/sendin
 
 * PHP 8.2 or higher
 * Laravel 9 or 10
-* Statamic v4.0 or higher
+* Statamic v4 or higher
 
 
 ## Installation
@@ -35,7 +35,7 @@ Set your Brevo API key in the `.env` file within your project:
   BREVO_API_KEY=your-api-key-goes-here
 ```
 
-Then all that's left to do is publish the config file to `config/brevo.php`:
+Then all that's left to do is publish the config file to `config/sendinblue.php`:
 
 ```
   php artisan vendor:publish --tag="brevo-config"
