@@ -268,22 +268,26 @@ class Brevo
      * Are there any Marketing Opt-in fields setup and have they been accepted?
      *
      * @param array $config
-     * @param $submission array
+     * @param object $submission_data
      *
      * @return bool
      */
     private function checkMarketingOptin(array $config, object $submission_data)
     {
-        // Get marketing opt-in field
-        $marketing_optin = Arr::get($config, 'marketing_optin_field', false);
+        $marketing_optin_field = Arr::get($config, 'marketing_optin_field');
 
-        // Check if marketing permission field is in submission (which indicates it's checked) or if it's not in use
-        if (request()->has($marketing_optin)) {
+        if ($marketing_optin_field) {
+            // Check if the field exists in submission data and if it's ticked
+            $optin_value = Arr::get($submission_data, $marketing_optin_field);
+            if (!empty($optin_value)) {
+                return true; // Opt-in is ticked
+            } else {
+                return false; // Opt-in is not ticked
+            }
+        } else {
+            // If marketing_optin_field is not set in config, return true
             return true;
         }
-
-        // Return false as field is setup but has not been checked
-        return false;
     }
 
     /**
