@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'api_key' => env('BREVO_API_KEY'),
+    'api_key' => env('BREVO_API_KEY', env('SENDINBLUE_API_KEY')),
 
     /*
     |--------------------------------------------------------------------------
