@@ -224,8 +224,8 @@ class Brevo
             // Check if Automatic Name Split is configured
             if (Arr::get($config, 'auto_split_name', true)) {
 
-                // If there is no last_name field mapped
-                if ($this->last_name_field_exists === false) {
+                // If name field is set and there is no last_name field mapped
+                if ($this->subscriber_data_attributes && $this->last_name_field_exists === false) {
                     // Split name by first space character
                     $name_array = explode(' ', $this->subscriber_data_attributes['FIRSTNAME'], 2);
 
