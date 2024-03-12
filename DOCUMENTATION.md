@@ -1,4 +1,4 @@
-# Sendinblue for Statamic Documentation
+# Brevo for Statamic Documentation
 
 ## Setup
 
@@ -13,12 +13,12 @@ The recommended way to install this add-on is via the Statamic Marketplace or in
 Statamic will automatically register the add-on.
 
 
-### Add your Sendinblue API key to the `.env` file
+### Add your Brevo API key to the `.env` file
 
-In your `.env` file add a new line with your Sendinblue API key.
+In your `.env` file add a new line with your Brevo API key.
 
 ```
-  SENDINBLUE_API_KEY=your-key-goes-here
+  BREVO_API_KEY=your-key-goes-here
 ```
 
 
@@ -31,11 +31,11 @@ Your form only needs an email field as an absolute minimum, but our recommended 
 - Marketing Opt-in
 
 
-### Sendinblue settings
+### Brevo settings
 
-For each Statamic Form that you want to connect with Sendinblue you can add a form entry in the Sendinblue settings.
+For each Statamic Form that you want to connect with Brevo you can add a form entry in the Brevo settings.
 
-#### Sendinblue API Key
+#### Brevo API Key
 
 This is a read-only field that displays your current API key that is set in the `.env` file.
 
@@ -52,12 +52,12 @@ Select the list you would like to add the contact to.
 
 #### Name Field
 
-This is the field you want to use to capture someones name, by default the add-on will split this name by the first space character into first name and last name to be sent to your Sendinblue list. You can disable Automatic Name Splitting using the setting listed below or by mapping an additional field to Sendinblue's `LASTNAME` attribute.
+This is the field you want to use to capture someones name, by default the add-on will split this name by the first space character into first name and last name to be sent to your Brevo list. You can disable Automatic Name Splitting using the setting listed below or by mapping an additional field to Brevo's `LASTNAME` attribute.
 
 
 #### Email Field
 
-Along with a List Id, this is the only attribute that is required by Sendinblue on a submission. We don't do anything special with this field so you'll need to make sure you have validation setup in Statamic and/or your front-end code if required.
+Along with a List Id, this is the only attribute that is required by Brevo on a submission. We don't do anything special with this field so you'll need to make sure you have validation setup in Statamic and/or your front-end code if required.
 
 
 #### Automatically Split Name
@@ -67,11 +67,11 @@ When enabled this splits the Name Field into first name and last name using the 
 
 #### Opt-in Field
 
-This should ideally be an un-ticked checkbox that conforms to data protection regulations in your region. If the user does not tick this checkbox the submission to Statamic will still go through but the details will not be sent to Sendinblue.
+This should ideally be an un-ticked checkbox that conforms to data protection regulations in your region. If the user does not tick this checkbox the submission to Statamic will still go through but the details will not be sent to Brevo.
 
 
 #### Mapped Fields
 
-This is where you can map any additional Sendinblue attributes such as `LASTNAME` or `SMS` as well as any custom attributes you've created.
+This is where you can map any additional Brevo attributes such as `LASTNAME` or `SMS` as well as any custom attributes you've created.
 
 

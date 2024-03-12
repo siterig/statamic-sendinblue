@@ -1,6 +1,6 @@
 api_key:
   display: 'Brevo API Key'
-  instructions: 'Add your `BREVO_API_KEY` value to your `.env` file.'
+  instructions: 'Add your `BREVO_API_KEY` (or `SENDINBLUE_API_KEY`) value to your `.env` file.'
   type: text
   default: api_key
   read_only: true
