@@ -1,6 +1,7 @@
 <template>
     <div class="form-field-fieldtype-wrapper">
         <v-select
+            append-to-body="true"
             v-if="showFieldtype && form"
             v-model="selected"
             :clearable="true"
@@ -9,6 +10,7 @@
             :searchable="true"
             @input="$emit('input', $event)"
             placeholder="Choose a form field..."
+            :appendToBody="true"
         />
     </div>
 </template>

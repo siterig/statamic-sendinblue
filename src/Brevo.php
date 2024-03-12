@@ -1,22 +1,21 @@
 <?php
 
-namespace SiteRig\Sendinblue;
+namespace SiteRig\Brevo;
 
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
-use SendinBlue\Client\Api as SendinblueAPI;
-use SendinBlue\Client\Configuration as SendinblueConfig;
-use SendinBlue\Client\Model as SendinblueModel;
-use Statamic\Facades\Blueprint;
+use Brevo\Client\Api as BrevoAPI;
+use Brevo\Client\Configuration as BrevoConfig;
+use Brevo\Client\Model as BrevoModel;
 use Statamic\Support\Arr;
 
-class Sendinblue
+class Brevo
 {
     private $config = null;
 
-    private $sendinblue_attributes = null;
+    private $brevo_attributes = null;
 
-    private $sendinblue_contacts = null;
+    private $brevo_contacts = null;
 
     private $subscriber_data = [];
 
@@ -26,30 +25,30 @@ class Sendinblue
 
     public function __construct()
     {
-        if ($api_key = config('sendinblue.api_key')) {
+        if ($api_key = config('brevo.api_key')) {
 
             // setup api-key in config
-            $this->config = SendinblueConfig::getDefaultConfiguration()->setApiKey('api-key', $api_key);
+            $this->config = BrevoConfig::getDefaultConfiguration()->setApiKey('api-key', $api_key);
 
             // create AttributesAPI object
-            $this->sendinblue_attributes = new SendinblueAPI\AttributesApi(
+            $this->brevo_attributes = new BrevoAPI\AttributesApi(
                 new GuzzleHttp\Client(),
                 $this->config
             );
 
             // create ContactsAPI object
-            $this->sendinblue_contacts = new SendinblueAPI\ContactsApi(
+            $this->brevo_contacts = new BrevoAPI\ContactsApi(
                 new GuzzleHttp\Client(),
                 $this->config
             );
 
             // create contact object
-            $this->subscriber_data = new SendinblueModel\CreateContact();
+            $this->subscriber_data = new BrevoModel\CreateContact();
         }
     }
 
     /**
-     * Get Lists from Sendinblue
+     * Get Lists from Brevo
      *
      * @param int $list_id
      *
@@ -61,7 +60,7 @@ class Sendinblue
         if ($list_id) {
 
             // Get single list
-            $lists = $this->sendinblue_contacts->getList($list_id);
+            $lists = $this->brevo_contacts->getList($list_id);
 
             // Check if there was an error getting this list by id
             if (property_exists($lists, 'code')) {
@@ -91,8 +90,8 @@ class Sendinblue
                 'sort' => 'desc',
             );
 
-            // Get lists from Sendinblue
-            $lists = $this->sendinblue_contacts->getLists($params['limit'], $params['offset'], $params['sort']);
+            // Get lists from Brevo
+            $lists = $this->brevo_contacts->getLists($params['limit'], $params['offset'], $params['sort']);
 
             // Check if there was an error getting this list by id
             if (property_exists($lists, 'code')) {
@@ -128,7 +127,7 @@ class Sendinblue
     }
 
     /**
-     * Get Attributes from Sendinblue
+     * Get Attributes from Brevo
      *
      * @param   string  $attribute_name
      *
@@ -136,8 +135,8 @@ class Sendinblue
      */
     public function getAttributes(string $attribute_name = null)
     {
-        // Get attributes from Sendinblue
-        $attributes = $this->sendinblue_attributes->getAttributes();
+        // Get attributes from Brevo
+        $attributes = $this->brevo_attributes->getAttributes();
 
         // Create new array for fields
         $attributes_list = [];
@@ -181,7 +180,7 @@ class Sendinblue
     }
 
     /**
-     * Add Subscriber to Sendinblue
+     * Add Subscriber to Brevo
      *
      * @param array $config
      * @param object $submission
@@ -225,8 +224,8 @@ class Sendinblue
             // Check if Automatic Name Split is configured
             if (Arr::get($config, 'auto_split_name', true)) {
 
-                // If there is no last_name field mapped
-                if ($this->last_name_field_exists === false) {
+                // If name field is set and there is no last_name field mapped
+                if ($this->subscriber_data_attributes && $this->last_name_field_exists === false) {
                     // Split name by first space character
                     $name_array = explode(' ', $this->subscriber_data_attributes['FIRSTNAME'], 2);
 
@@ -246,14 +245,14 @@ class Sendinblue
             // Set list id
             $this->subscriber_data['listIds'] = [$config['list_id']];
 
-            // send to Sendinblue
-            $response = $this->sendinblue_contacts->createContact($this->subscriber_data);
+            // send to Brevo
+            $response = $this->brevo_contacts->createContact($this->subscriber_data);
 
             // Check response for errors
             if (!is_null($response) && property_exists($response, 'code') && $response->code == '400') {
 
                 // Generate error to the log
-                \Log::error("Sendinblue - " . $response->error->message);
+                \Log::error("Brevo - " . $response->error->message);
 
             }
 
@@ -269,22 +268,26 @@ class Sendinblue
      * Are there any Marketing Opt-in fields setup and have they been accepted?
      *
      * @param array $config
-     * @param $submission array
+     * @param object $submission_data
      *
      * @return bool
      */
     private function checkMarketingOptin(array $config, object $submission_data)
     {
-        // Get marketing opt-in field
-        $marketing_optin = Arr::get($config, 'marketing_optin_field', false);
+        $marketing_optin_field = Arr::get($config, 'marketing_optin_field');
 
-        // Check if marketing permission field is in submission (which indicates it's checked) or if it's not in use
-        if (request()->has($marketing_optin)) {
+        if ($marketing_optin_field) {
+            // Check if the field exists in submission data and if it's ticked
+            $optin_value = Arr::get($submission_data, $marketing_optin_field);
+            if (!empty($optin_value)) {
+                return true; // Opt-in is ticked
+            } else {
+                return false; // Opt-in is not ticked
+            }
+        } else {
+            // If marketing_optin_field is not set in config, return true
             return true;
         }
-
-        // Return false as field is setup but has not been checked
-        return false;
     }
 
     /**
@@ -302,7 +305,7 @@ class Sendinblue
     }
 
     /**
-     * Map the fields ready for payload sent to Sendinblue
+     * Map the fields ready for payload sent to Brevo
      *
      * @param $field_name string
      * @param $field_mapped_name string
