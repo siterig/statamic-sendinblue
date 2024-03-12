@@ -4,17 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2023-02-22
-- Updated minimum requirements to PHP 8.2, Laravel 9 and Statamic 4.0
-- Updated most references from Sendinblue to Brevo
-- Removed deprecated Sendinblue PHP SDK
+## [1.1.0] - 2024-03-11
+
+### Added
 - Added Brevo PHP SDK
 - Added fallback for `SENDINBLUE_API_KEY` environment variable for backwards compatibility
+
+### Changed
+- Updated minimum requirements to PHP 8.2, Laravel 9 and Statamic 4.0
+- Updated most references from Sendinblue to Brevo
+
+### Fixed
 - Fixed issue with Vue-based select dropdowns where they open behind other form elements
 - Fixed issue where a form with no name field set but the auto split name field enabled would cause an error
 
-### Fixed
-- Fixed issue with config where only the first form is saved
+### Removed
+- Removed deprecated Sendinblue PHP SDK
+
 
 ## [1.0.3] - 2023-02-22
 
