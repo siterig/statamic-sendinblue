@@ -4,12 +4,12 @@
     "type": "statamic-addon",
     "require": {
         "php": "^8.2",
-        "edalzell/forma": "^2.1",
-        "laravel/framework": "^9.0 || ^10.0",
-        "statamic/cms": "^4.0",
-        "getbrevo/brevo-php": "^1.0"
+        "edalzell/forma": "^3.0",
+        "laravel/framework": "^10.0 || ^11.0",
+        "statamic/cms": "^4.0 || ^5.0",
+        "getbrevo/brevo-php": "^2.0"
     },
-    "description": "Subscribe your Statamic v4 contact form submissions straight into Brevo",
+    "description": "Subscribe your Statamic v5 contact form submissions straight into Brevo",
     "authors": [
         {
             "name": "Matt Stone",
