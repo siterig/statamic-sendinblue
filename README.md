@@ -17,7 +17,7 @@ Read it on the [Statamic Marketplace](https://statamic.com/addons/siterig/sendin
 ## Requirements
 
 * PHP 8.2 or higher
-* Laravel 9 or 10
+* Laravel 10 or 11
 * Statamic v4 or higher
 
 
