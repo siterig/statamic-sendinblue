@@ -183,86 +183,95 @@ class Brevo
      * Add Subscriber to Brevo
      *
      * @param array $config
-     * @param object $submission
-     *
+     * @param object $submission_data
      * @return array
      */
     public function addSubscriber(array $config, object $submission_data)
     {
-        // Check if marketing permissions were accepted (returns true if not in use)
-        if ($this->checkMarketingOptin($config, $submission_data)) {
-
-            // Set data email field
-            $this->subscriber_data['email'] = $submission_data->get($config['email_field']);
-
-            if (!empty($config['name_field'])) { // Check if name_field is set
-                $this->doMapFields('FIRSTNAME', $config['name_field'], $submission_data->toArray(), ' ');
-            }
-
-            // Check for mapped fields
-            if ($mapped_fields = Arr::get($config, 'mapped_fields')) {
-
-                // Loop through mapped fields
-                collect($mapped_fields)->map(function ($item, $key) use ($submission_data) {
-
-                    // In case there is no mapped form field
-                    if (!empty($item["mapped_form_fields"])) {
-
-                        // Check if mapped fields contain last_name
-                        if ($item['list_attribute'] == 'LASTNAME') {
-                            $this->last_name_field_exists = true;
-                        }
-
-                        $this->doMapFields($item['list_attribute'], $item["mapped_form_fields"], $submission_data->toArray());
-
-                    }
-
-                });
-
-            }
-
-            // Check if Automatic Name Split is configured
-            if (Arr::get($config, 'auto_split_name', true)) {
-
-                // If name field is set and there is no last_name field mapped
-                if ($this->subscriber_data_attributes && $this->last_name_field_exists === false) {
-                    // Split name by first space character
-                    $name_array = explode(' ', $this->subscriber_data_attributes['FIRSTNAME'], 2);
-
-                    // Set data
-                    $this->subscriber_data_attributes['FIRSTNAME'] = $name_array[0];
-                    $this->subscriber_data_attributes['LASTNAME'] = $name_array[1] ?? '';
-                }
-
-            }
-
-            // Set attributes
-            $this->subscriber_data['attributes'] = (object) $this->subscriber_data_attributes;
-
-            // Set updates to true
-            $this->subscriber_data['updateEnabled'] = true;
-
-            // Set list id
-            $this->subscriber_data['listIds'] = [$config['list_id']];
-
-            // send to Brevo
-            $response = $this->brevo_contacts->createContact($this->subscriber_data);
-
-            // Check response for errors
-            if (!is_null($response) && property_exists($response, 'code') && $response->code == '400') {
-
-                // Generate error to the log
-                \Log::error("Brevo - " . $response->error->message);
-
-            }
-
+        // Skip processing if $config is empty or marketing opt-in is not accepted
+        if (empty($config) || !$this->checkMarketingOptin($config, $submission_data)) {
+            return ['submission' => $submission_data];
         }
 
-        // Return the submission
-        return [
-            'submission' => $submission_data
-        ];
+        // Initialise subscriber data
+        $this->subscriber_data['email'] = $submission_data->get($config['email_field']);
+
+        // Map name if name_field is configured
+        if (!empty($config['name_field'])) {
+            $this->doMapFields('FIRSTNAME', $config['name_field'], $submission_data->toArray(), ' ');
+        }
+
+        // Map additional fields
+        $this->mapAdditionalFields($config, $submission_data);
+
+        // Automatically split name if enabled and last_name is not mapped
+        if (Arr::get($config, 'auto_split_name', true) && !$this->last_name_field_exists) {
+            $this->splitName();
+        }
+
+        // Finalize subscriber data
+        $this->finalizeSubscriberData($config);
+
+        // Send data to Brevo
+        $this->sendToBrevo();
+
+        return ['submission' => $submission_data];
     }
+
+    /**
+     * Map additional fields from the configuration.
+     *
+     * @param array $config
+     * @param object $submission_data
+     */
+    protected function mapAdditionalFields(array $config, object $submission_data)
+    {
+        $mapped_fields = Arr::get($config, 'mapped_fields', []);
+        collect($mapped_fields)->each(function ($item) use ($submission_data) {
+            if (!empty($item['mapped_form_fields'])) {
+                if ($item['list_attribute'] === 'LASTNAME') {
+                    $this->last_name_field_exists = true;
+                }
+                $this->doMapFields($item['list_attribute'], $item['mapped_form_fields'], $submission_data->toArray());
+            }
+        });
+    }
+
+    /**
+     * Split the name into first and last names if applicable.
+     */
+    protected function splitName()
+    {
+        $name = $this->subscriber_data_attributes['FIRSTNAME'] ?? '';
+        [$first_name, $last_name] = explode(' ', $name, 2) + ['', ''];
+        $this->subscriber_data_attributes['FIRSTNAME'] = $first_name;
+        $this->subscriber_data_attributes['LASTNAME'] = $last_name;
+    }
+
+    /**
+     * Finalize subscriber data before sending it to Brevo.
+     *
+     * @param array $config
+     */
+    protected function finalizeSubscriberData(array $config)
+    {
+        $this->subscriber_data['attributes'] = (object) $this->subscriber_data_attributes;
+        $this->subscriber_data['updateEnabled'] = true;
+        $this->subscriber_data['listIds'] = [$config['list_id']];
+    }
+
+    /**
+     * Send subscriber data to Brevo.
+     */
+    protected function sendToBrevo()
+    {
+        $response = $this->brevo_contacts->createContact($this->subscriber_data);
+
+        if (!is_null($response) && property_exists($response, 'code') && $response->code == '400') {
+            \Log::error("Brevo - " . $response->error->message);
+        }
+    }
+
 
     /**
      * Are there any Marketing Opt-in fields setup and have they been accepted?
