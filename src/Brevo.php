@@ -4,6 +4,7 @@ namespace SiteRig\Brevo;
 
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
+use GuzzleHttp\Exception\ClientException;
 use Brevo\Client\Api as BrevoAPI;
 use Brevo\Client\Configuration as BrevoConfig;
 use Brevo\Client\Model as BrevoModel;
@@ -56,74 +57,155 @@ class Brevo
      */
     public function getLists(int $list_id = null)
     {
-        // Check if this is a request for a single group
-        if ($list_id) {
-
-            // Get single list
-            $lists = $this->brevo_contacts->getList($list_id);
-
-            // Check if there was an error getting this list by id
-            if (property_exists($lists, 'code')) {
-
-                // Add error message
-                $contact_lists = [
+        // Check if API client is initialized
+        if (!$this->brevo_contacts) {
+            return [
+                [
                     'id' => 0,
-                    'title' => 'Error: ' . $lists['message'],
-                ];
+                    'title' => 'Error: API Key is not configured',
+                ]
+            ];
+        }
 
-            } else {
+        try {
+            // Check if this is a request for a single group
+            if ($list_id) {
 
-                // Add list to array
-                $contact_lists = [
-                    'id' => $lists['id'],
-                    'title' => $lists['name'],
-                ];
+                // Get single list
+                $lists = $this->brevo_contacts->getList($list_id);
 
-            }
+                // Check if there was an error getting this list by id
+                if (property_exists($lists, 'code')) {
 
-        } else {
+                    // Add error message
+                    $contact_lists = [
+                        'id' => 0,
+                        'title' => 'Error: ' . $lists['message'],
+                    ];
 
-            // Set list parameters
-            $params = array(
-                'limit' => 50,
-                'offset' => 0,
-                'sort' => 'desc',
-            );
-
-            // Get lists from Brevo
-            $lists = $this->brevo_contacts->getLists($params['limit'], $params['offset'], $params['sort']);
-
-            // Check if there was an error getting this list by id
-            if (property_exists($lists, 'code')) {
-
-                // Add error message
-                $contact_lists = [
-                    'id' => 0,
-                    'title' => 'Error: ' . $lists['message'],
-                ];
-
-            } else {
-
-                // Create new array for groups
-                $contact_lists = [];
-
-                // Loop through lists and put into new array
-                foreach ($lists['lists'] as $key => $contact_list) {
+                } else {
 
                     // Add list to array
-                    $contact_lists[] = [
-                        'id' => $contact_list['id'],
-                        'title' => $contact_list['name'],
+                    $contact_lists = [
+                        'id' => $lists['id'],
+                        'title' => $lists['name'],
                     ];
+
+                }
+
+            } else {
+
+                // Set list parameters
+                $params = array(
+                    'limit' => 50,
+                    'offset' => 0,
+                    'sort' => 'desc',
+                );
+
+                // Get lists from Brevo
+                $lists = $this->brevo_contacts->getLists($params['limit'], $params['offset'], $params['sort']);
+
+                // Check if there was an error getting this list by id
+                if (property_exists($lists, 'code')) {
+
+                    // Add error message
+                    $contact_lists = [
+                        [
+                            'id' => 0,
+                            'title' => 'Error: ' . $lists['message'],
+                        ]
+                    ];
+
+                } else {
+
+                    // Create new array for groups
+                    $contact_lists = [];
+
+                    // Loop through lists and put into new array
+                    foreach ($lists['lists'] as $key => $contact_list) {
+
+                        // Add list to array
+                        $contact_lists[] = [
+                            'id' => $contact_list['id'],
+                            'title' => $contact_list['name'],
+                        ];
+
+                    }
 
                 }
 
             }
 
-        }
+            // Return the array
+            return $contact_lists;
 
-        // Return the array
-        return $contact_lists;
+        } catch (ClientException $e) {
+            // Handle HTTP client errors (401, 403, etc.)
+            $response = $e->getResponse();
+            $statusCode = $response ? $response->getStatusCode() : null;
+            $errorMessage = 'API Error';
+
+            if ($statusCode === 401) {
+                $errorMessage = 'API Key is not enabled or has been deleted on Brevo';
+                
+                // Try to get the error message from the response
+                if ($response) {
+                    try {
+                        $responseBody = json_decode($response->getBody()->getContents(), true);
+                        if (isset($responseBody['message'])) {
+                            $errorMessage = $responseBody['message'];
+                        }
+                    } catch (\Exception $bodyException) {
+                        // If we can't read the body, use the default message
+                    }
+                }
+            }
+
+            // Return error message in the expected format
+            if ($list_id) {
+                return [
+                    'id' => 0,
+                    'title' => 'Error: ' . $errorMessage,
+                ];
+            } else {
+                return [
+                    [
+                        'id' => 0,
+                        'title' => 'Error: ' . $errorMessage,
+                    ]
+                ];
+            }
+
+        } catch (\Exception $e) {
+            // Handle any other exceptions
+            $errorMessage = 'Unable to fetch lists from Brevo';
+            
+            // Check if the exception message contains useful error info
+            $message = $e->getMessage();
+            if (str_contains($message, '401') || str_contains($message, 'unauthorized') || str_contains($message, 'API Key is not enabled')) {
+                $errorMessage = 'API Key is not enabled or has been deleted on Brevo';
+                
+                // Try to extract error message from JSON in exception message
+                if (preg_match('/"message":"([^"]+)"/', $message, $matches)) {
+                    $errorMessage = $matches[1];
+                }
+            }
+
+            // Return error message in the expected format
+            if ($list_id) {
+                return [
+                    'id' => 0,
+                    'title' => 'Error: ' . $errorMessage,
+                ];
+            } else {
+                return [
+                    [
+                        'id' => 0,
+                        'title' => 'Error: ' . $errorMessage,
+                    ]
+                ];
+            }
+        }
     }
 
     /**
@@ -135,48 +217,127 @@ class Brevo
      */
     public function getAttributes(string $attribute_name = null)
     {
-        // Get attributes from Brevo
-        $attributes = $this->brevo_attributes->getAttributes();
+        // Check if API client is initialized
+        if (!$this->brevo_attributes) {
+            return [
+                [
+                    'id' => '',
+                    'title' => 'Error: API Key is not configured',
+                ]
+            ];
+        }
 
-        // Create new array for fields
-        $attributes_list = [];
+        try {
+            // Get attributes from Brevo
+            $attributes = $this->brevo_attributes->getAttributes();
 
-        // Loop through fields and put into new array
-        foreach ($attributes['attributes'] as $key => $attribute) {
+            // Create new array for fields
+            $attributes_list = [];
 
-            // Check this isn't the first name or email attribute
-            if (!($attribute['name'] == 'FIRSTNAME' || $attribute['name'] == 'EMAIL')) {
+            // Loop through fields and put into new array
+            foreach ($attributes['attributes'] as $key => $attribute) {
 
-                // Check if this is a request for a single attribute
-                if ($attribute_name) {
+                // Check this isn't the first name or email attribute
+                if (!($attribute['name'] == 'FIRSTNAME' || $attribute['name'] == 'EMAIL')) {
 
-                    // Check if this attribute matches
-                    if ($attribute['name'] == $attribute_name) {
+                    // Check if this is a request for a single attribute
+                    if ($attribute_name) {
 
-                        // Add list to array
-                        $attributes_list = [
+                        // Check if this attribute matches
+                        if ($attribute['name'] == $attribute_name) {
+
+                            // Add list to array
+                            $attributes_list = [
+                                'id' => $attribute['name'],
+                                'title' => $attribute['name']
+                            ];
+
+                        }
+
+                    } else {
+
+                        // Add attribute to array
+                        $attributes_list[] = [
                             'id' => $attribute['name'],
                             'title' => $attribute['name']
                         ];
 
                     }
 
-                } else {
-
-                    // Add attribute to array
-                    $attributes_list[] = [
-                        'id' => $attribute['name'],
-                        'title' => $attribute['name']
-                    ];
-
                 }
 
             }
 
-        }
+            // Return the array
+            return $attributes_list;
 
-        // Return the array
-        return $attributes_list;
+        } catch (ClientException $e) {
+            // Handle HTTP client errors (401, 403, etc.)
+            $response = $e->getResponse();
+            $statusCode = $response ? $response->getStatusCode() : null;
+            $errorMessage = 'API Error';
+
+            if ($statusCode === 401) {
+                $errorMessage = 'API Key is not enabled or has been deleted on Brevo';
+                
+                // Try to get the error message from the response
+                if ($response) {
+                    try {
+                        $responseBody = json_decode($response->getBody()->getContents(), true);
+                        if (isset($responseBody['message'])) {
+                            $errorMessage = $responseBody['message'];
+                        }
+                    } catch (\Exception $bodyException) {
+                        // If we can't read the body, use the default message
+                    }
+                }
+            }
+
+            // Return error message in the expected format
+            if ($attribute_name) {
+                return [
+                    'id' => '',
+                    'title' => 'Error: ' . $errorMessage,
+                ];
+            } else {
+                return [
+                    [
+                        'id' => '',
+                        'title' => 'Error: ' . $errorMessage,
+                    ]
+                ];
+            }
+
+        } catch (\Exception $e) {
+            // Handle any other exceptions
+            $errorMessage = 'Unable to fetch attributes from Brevo';
+            
+            // Check if the exception message contains useful error info
+            $message = $e->getMessage();
+            if (str_contains($message, '401') || str_contains($message, 'unauthorized') || str_contains($message, 'API Key is not enabled')) {
+                $errorMessage = 'API Key is not enabled or has been deleted on Brevo';
+                
+                // Try to extract error message from JSON in exception message
+                if (preg_match('/"message":"([^"]+)"/', $message, $matches)) {
+                    $errorMessage = $matches[1];
+                }
+            }
+
+            // Return error message in the expected format
+            if ($attribute_name) {
+                return [
+                    'id' => '',
+                    'title' => 'Error: ' . $errorMessage,
+                ];
+            } else {
+                return [
+                    [
+                        'id' => '',
+                        'title' => 'Error: ' . $errorMessage,
+                    ]
+                ];
+            }
+        }
     }
 
     /**

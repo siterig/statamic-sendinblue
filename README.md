@@ -8,56 +8,49 @@ This is not an official add-on by Brevo and as such support requests should be s
 
 This addon uses [Forma](https://statamic.com/addons/silentz/forma) by Erin Dalzell and will be automatically installed for you.
 
-
 ## Documentation
 
 Read it on the [Statamic Marketplace](https://statamic.com/addons/siterig/sendinblue/docs) or contribute to it [here on GitHub](DOCUMENTATION.md).
 
-
 ## Requirements
 
 * PHP 8.2 or higher
-* Laravel 10 or 11
-* Statamic v4 or higher
-
+* Laravel 10, 11 or 12
+* Statamic v4 or v5
 
 ## Installation
 
 You should install via the Statamic Marketplace at [https://statamic.com/addons/siterig/sendinblue](https://statamic.com/addons/siterig/sendinblue) or you can use composer in your project root:
 
-```
+```bash
   composer require siterig/sendinblue
 ```
 
 Set your Brevo API key in the `.env` file within your project:
 
-```
+```env
   BREVO_API_KEY=your-api-key-goes-here
 ```
 
 Then all that's left to do is publish the config file to `config/sendinblue.php`:
 
-```
+```bash
   php artisan vendor:publish --tag="brevo-config"
 ```
 
 Now you can configure your form settings within the Control Panel from the Brevo menu option.
 
-
 ## Developers
 
 Matt Stone, Craig Bowler, Jamie McGrory
-
 
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
-
 ## Contributing
 
 See our [contributing guide](CONTRIBUTING.md) for more information.
-
 
 ## License
 
