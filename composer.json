@@ -4,23 +4,23 @@
     "type": "statamic-addon",
     "require": {
         "php": "^8.2",
-        "edalzell/forma": "^3.0",
-        "laravel/framework": "^10.0 || ^11.0",
+        "edalzell/forma": "3.1.1",
+        "laravel/framework": "^10.0 || ^11.0 || ^12.0",
         "statamic/cms": "^4.0 || ^5.0",
-        "getbrevo/brevo-php": "^2.0"
+        "getbrevo/brevo-php": "2.0.6"
     },
     "description": "Subscribe your Statamic v5 contact form submissions straight into Brevo",
     "authors": [
         {
             "name": "Matt Stone",
-            "email": "matt@rockandscissor.com",
-            "homepage": "https://www.rockandscissor.com",
+            "email": "matt@siterig.co.uk",
+            "homepage": "https://siterig.io",
             "role": "Co-founder"
         },
         {
             "name": "Craig Bowler",
-            "email": "craig@rockandscissor.com",
-            "homepage": "https://www.rockandscissor.com",
+            "email": "craig@siterig.co.uk",
+            "homepage": "https://siterig.io",
             "role": "Co-founder"
         },
         {
